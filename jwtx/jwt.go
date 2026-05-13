@@ -16,11 +16,8 @@ var (
 
 // Claims JWT载荷
 type Claims struct {
-	UID        string `json:"uid"`
-	Username   string `json:"username"`
-	MerchantId string `json:"merchant_id"`
-	Currency   string `json:"currency"`
-
+	UID      string `json:"uid"`
+	Username string `json:"username"`
 	jwt.RegisteredClaims
 }
 
@@ -41,15 +38,13 @@ func NewJWTUtil(secret string, accessExpire, refreshExpire int64) *JWTUtil {
 }
 
 // GenerateToken 生成访问令牌
-func (j *JWTUtil) GenerateToken(uid, username, merchantId, currency string) (string, int64, error) {
+func (j *JWTUtil) GenerateToken(uid, username string) (string, int64, error) {
 	now := time.Now()
 	expireAt := now.Add(time.Duration(j.AccessExpire) * time.Second)
 
 	claims := Claims{
-		UID:        uid,
-		Username:   username,
-		MerchantId: merchantId,
-		Currency:   currency,
+		UID:      uid,
+		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expireAt),
 			IssuedAt:  jwt.NewNumericDate(now),
@@ -72,10 +67,8 @@ func (j *JWTUtil) GenerateRefreshToken(uid string, username, merchantId, currenc
 	expireAt := now.Add(time.Duration(j.RefreshExpire) * time.Second)
 
 	claims := Claims{
-		UID:        uid,
-		Username:   username,
-		MerchantId: merchantId,
-		Currency:   currency,
+		UID:      uid,
+		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expireAt),
 			IssuedAt:  jwt.NewNumericDate(now),
@@ -126,5 +119,5 @@ func (j *JWTUtil) RefreshToken(refreshToken string) (string, int64, error) {
 	}
 
 	// 生成新的访问令牌
-	return j.GenerateToken(claims.UID, claims.Username, claims.MerchantId, claims.Currency)
+	return j.GenerateToken(claims.UID, claims.Username)
 }
