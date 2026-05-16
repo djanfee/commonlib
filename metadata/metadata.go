@@ -66,8 +66,8 @@ func GetMetadata[T any](ctx context.Context, key any) (T, bool) {
 }
 
 // GetUidFromCtx 从上下文中获取uid
-func GetUidFromCtx(ctx context.Context) string {
-	return cast.ToString(ctx.Value(CtxJWTUserId))
+func GetUidFromCtx(ctx context.Context) int64 {
+	return cast.ToInt64(ctx.Value(CtxJWTUserId))
 }
 
 // GetUsernameFromCtx 从上下文中获取username
